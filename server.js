@@ -117,7 +117,7 @@ app.post("/login", urlencoder, function(req, res){
    
    User.findOne({
        username : username,
-       password : CryptoJS.AES.decrypt(password, 'secret key 123');
+       password : CryptoJS.AES.decrypt(password, 'secret key 123')
        
        
        
@@ -168,7 +168,7 @@ app.post("/register", urlencoder, function(req,res){
          
     let user = new User({
         username : username,
-        password : CryptoJS.AES.encrypt(password, 'secret');,
+        password : CryptoJS.AES.encrypt(password, 'secret'),
         email : email
     })
     

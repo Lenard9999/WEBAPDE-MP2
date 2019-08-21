@@ -162,9 +162,12 @@
         <input id="subQuery" type="button" name="subQuery" value="Search">
         <select name="filter" id="filter">
             <option value="museum">Museums</option>
+            <option value="restaurant">Restaurants</option>
+            <option value="zoo">Zoos</option>
             <option value="park">Parks</option>
             <option value="airport">Airports</option>
             <option value="shopping_mall">Shopping Malls</option>
+            
         </select>
 
         <br>
@@ -251,6 +254,10 @@
                         } else if (types == "airport"){
                             url = "https://maps.gstatic.com/mapfiles/place_api/icons/airport-71.png"
                         } else if (types == "shopping_mall"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png"
+                        } else if (types == "restaurant"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png"
+                        } else if (types == "zoo"){
                             url = "https://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png"
                         }
                         
