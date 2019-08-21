@@ -9,6 +9,8 @@ const {User} = require("./model/user.js")
 const {List} = require("./model/list.js")
 const {Item} = require("./model/item.js")
 const hbs= require("hbs")
+const alert = require("alert-node")
+var CryptoJS = require("crypto-js");
 
  ObjectID = require('mongodb').ObjectID; 
 
@@ -115,7 +117,7 @@ app.post("/login", urlencoder, function(req, res){
    
    User.findOne({
        username : username,
-       password : password
+       password : CryptoJS.AES.decrypt(password, 'secret key 123');
        
        
        
@@ -124,8 +126,7 @@ app.post("/login", urlencoder, function(req, res){
        if(err){
            res.send("Something went wrong")
        }else if(!doc){
-          //alert("User does not exist")
-          res.sendFile(__dirname+"/public/usernotexist.html")
+          alert("Username/Password is incorrect");
        }
        else{
            
@@ -160,53 +161,41 @@ app.post("/login", urlencoder, function(req, res){
 
 
 app.post("/register", urlencoder, function(req,res){
-         let username = req.body.un
-         let password = req.body.pw
-         let email = req.body.email
+    let username = req.body.un
+    let password = req.body.pw
+    let email = req.body.email
         
          
-         let user = new User({
-        
-               username : username,
-         password : password,
-             email : email
-   
-         
-         
-         
-         })
-         user.save().then((doc)=>{
-             
-             console.log(doc)
-            // req.session.username=doc.username
-              let fs= username
-              let fs2 = doc._id
-               
-    res.cookie("loggeduser", fs,{
-          maxAge : 1000*60*60*24*31
-        // 1 month
-        
-        
+    let user = new User({
+        username : username,
+        password : CryptoJS.AES.encrypt(password, 'secret');,
+        email : email
     })
-             res.cookie("UserId", fs2, {
-                maxAge : 1000*60*60*24*31
-               
-               
-           })   
-  
-             res.redirect("/")
-             
-             
-             
-         }, (err)=>{
+    
+    user.save().then((doc)=>{
+        console.log(doc)
+        // req.session.username=doc.username
+        let fs= username
+        let fs2 = doc._id
+        
+        res.cookie("loggeduser", fs,{
+              maxAge : 1000*60*60*24*31
+            // 1 month
+        })
+        
+        res.cookie("UserId", fs2, {
+            maxAge : 1000*60*60*24*31   
+        })   
+        
+        res.redirect("/")
+                    
+    }, (err)=>{
             
-             res.send("Something went wrong")
-             
-             
-         })
-   
+        res.send("Something went wrong")
+              
+    })
          
-         })
+})
 
 app.get("/Logout", function(req,res){
     
