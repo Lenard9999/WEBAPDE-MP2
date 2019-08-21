@@ -183,9 +183,9 @@
         <div id="map"></div>
         
         <form action="viewlist" >
-            <input type="submit" value="View Lists">
+            <input type="submit" value="View Itinerary">
         </form>
-        <a href="createlistpage"><input type="submit" value="Create New List"></a>
+        <a href="createlistpage"><input type="submit" value="Create New Itinerary"></a>
 
         <h2> {{list}}   {{date}}</h2>
         <div id="tempTable"></div>
@@ -197,7 +197,10 @@
             var placeType
             var autocomplete
             
+            var url
+            var qbool
             var center
+            var icon
             var request
             var detRequest
             var service
@@ -233,6 +236,18 @@
                     service = new google.maps.places.PlacesService(map);
                     
                     google.maps.event.addListener(map, 'rightclick', function(event){
+                                            
+                        
+                        if(types == "museum"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/museum-71.png"
+                        } else if (types == "park"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/generic_recreational-71.png"
+                        } else if (types == "airport"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/airport-71.png"
+                        } else if (types == "shopping_mall"){
+                            url = "https://maps.gstatic.com/mapfiles/place_api/icons/shopping-71.png"
+                        }
+                        
                         map.setCenter(event.latLng)
                         center = event.latLng
                         clearCircle()
@@ -314,6 +329,7 @@
                 function callback2(place, status){
                     console.log(place)
                     if(status == google.maps.places.PlacesServiceStatus.OK){
+                        qbool = true
                         markers.push(createMarker(place));
                         map.setCenter(place.geometry.location);
                     }
@@ -323,12 +339,26 @@
             
                 
                 function createMarker(place){
+                    if(!qbool){
+                        icon = {
+                            url: url,
+                            scaledSize: new google.maps.Size(25, 25)
+                        }
+                    }
+                    else{
+                        icon = null
+                        qbool = false
+                    }
+
+                
                     var placeLoc = place.geometry.location;
                     var marker = new google.maps.Marker({
                         map:map,
                         animation: google.maps.Animation.DROP,
+                        icon,
                         position: place.geometry.location
                     })
+                    
             
 
 
