@@ -192,11 +192,12 @@
         <a href="createlistpage"><input type="submit" value="Create New Itinerary"></a>
 
         <h2> {{list}}   {{date}}</h2>
-        <div id="tempTable"></div>
-        <form action="savelist" method="POST" id="save">
+         <form action="savelist" method="POST" id="save">
            
             <input type="hidden" id="splaces" name="places">
         </form>
+        <div id="tempTable"></div>
+       
         <button class="saveplaces" >Save</button>
         
         <script>
