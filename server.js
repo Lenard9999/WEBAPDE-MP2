@@ -70,36 +70,25 @@ app.get("/", function(req,res){
             date= doc.date
             console.log(doc.name)
             console.log(listname)
+            res.render("home.hbs",{
+        username: req.cookies.loggeduser,
+        list: listname,
+        date: date,
+               
+       places: itemlist
+              })
         }
            
     
-if(itemlist==null){
-    console.log("listname"+ listname)
-       res.render("home.hbs",{
-        username: req.cookies.loggeduser,
-        list: listname,
-        date: date
-              })
-}else{
-  
-  List.find({  _id : { $in : itemlist}
-    }, (err,docs)=>{
-        
-   if(err){
-            res.send("Something went Wrong")
-        }else{
-            
-     res.render("home.hbs",{
-        username: req.cookies.loggeduser,
-        list: listname,
-         items: docs,
-         date: date
-              })
-            console.log(docs);
-        }
-        
-    })  
-}
+//if(itemlist==null){
+  //  console.log("listname"+ listname)
+       //res.render("home.hbs",{
+       // username: req.cookies.loggeduser,
+        //list: listname,
+        //date: date
+          //    })
+//}
+//}
             
             
            
@@ -246,6 +235,8 @@ app.post("/createlist", urlencoder, function(req,res){
              console.log(doc)
             // req.session.username=doc.username
              
+        
+   
   
              
              
@@ -270,7 +261,14 @@ app.post("/createlist", urlencoder, function(req,res){
         if(err){
             res.send("something went wrong")
         }else{
-          
+           fs3= list._id
+            console.log(doc._id)
+   // console.log(fs3+"thisoneoverhere")
+    res.cookie("curList", fs3,{
+        maxAge : 1000*60*60*24*31
+        // 1 month
+    })
+        
                 res.redirect("/")
         }
         
@@ -288,7 +286,9 @@ app.get("/createlistpage",  function(req,res){
 
 app.post("/deletelist", urlencoder, function(req,res){
     
-   
+   if (req.body.id== req.cookies.curList){
+        res.clearCookie("curList");
+   }
     List.deleteOne({
         _id: req.body.id
         
@@ -375,28 +375,13 @@ console.log("thisone"+listids.map(ObjectID))
     }) 
     
 
-  /*   List.find({  _id : { $in: User.find(req.cookies.UserId).map(function (doc) {
-      return doc._id
-    })
-                        }
-    }, (err,docs)=>{
-        
-   if(err){
-            res.send(err)
-        }else{
-            
-       // res.render("viewlist.hbs",{
-      //  list:docs
-     // })
-            console.log(docs);
-        }*/
+ 
         
     }) 
 })
     
 
-app.post("/deletefromlist", urlencoder, function(req,res){
-})
+
 app.post("/edit", urlencoder, function(req,res){
     console.log(req.body.id)
     List.findOne({
@@ -458,30 +443,36 @@ app.post("/editlist", urlencoder, function(req,res){
     })
 
 
-app.post("/addtolist", urlencoder, (req,res)=>{
-     console.log("POST /add")
+app.post("/savelist", urlencoder, (req,res)=>{
+     
+    let placesstring= req.body.places
+    let places= placesstring.split(',')
+     console.log(places)
+    console.log(places[0])
+   
+    List.updateOne({
+           _id:req.cookies.curList
+       },{ $set: { item: places }
+                 
     
-    
-    
- //   let item = req.body.item 
-  //  let type = req.body.type 
-   // let start = req.body.starttime
- ///   let end= req.body.endtime
-  //  let idlist= 
-    // redirect isntad of res.send admin hbs....
-   // let user = new User({
-   //     item, type, start, end, idlist
- //   })
-    
-    
-   // user.save().then((doc)=>{
-    //   res.redirect("/users")
+               
+       },(err, doc)=>{
         
-  //  },  (err)=> {
-   //     res.send(err)
         
-   // })
+       
+        
+        if(err){
+            res.send(err)
+        }else{
+              console.log(places[0])
+          console.log(doc)
+                res.redirect("/")
+        }
+         
+         
+         })
     
+
 })
 
 app.post("/search", urlencoder, function(req,res){

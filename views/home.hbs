@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Google Maps</title>
+ 
          <!--background-image:url(map.jpg)  #ffdab3-->
         <style>
             form{
@@ -189,6 +190,11 @@
 
         <h2> {{list}}   {{date}}</h2>
         <div id="tempTable"></div>
+        <form action="savelist" method="POST" id="save">
+           
+            <input type="hidden" id="splaces" name="places">
+        </form>
+        <button class="saveplaces" >Save</button>
         
         <script>
             var map
@@ -205,7 +211,7 @@
             var markers = [];
             var mapCircle
             var savedPlaces = [];
-            
+          
             
                 function initMap(){
                     console.log($('#filter').offset())
@@ -347,9 +353,9 @@
                     return marker;
                 }
             
-
+ 
                 function addPlace(){
-                    savedPlaces.push(curPlace)
+                    savedPlaces.push(curPlace.name)
                     displayArray()
                 }
             
@@ -372,6 +378,12 @@
                     }
                     displayArray()
                 }
+            function deleteitem(num){
+                    savedPlaces.splice(num,1)
+                  
+                    displayArray()
+                }
+                    
                     
                 function displayArray(){
                     var perrow = 5,
@@ -379,7 +391,8 @@
 
   
                     for (var i=0; i<savedPlaces.length; i++) {
-                        html += "<td><button onclick='leftOrder("+ i +")'><</button>" + savedPlaces[i].name + "<button onclick='rightOrder("+ i +")'>></button></td>";
+                        j=i+1;
+                        html += "<td><button onclick='leftOrder("+ i +")'><</button>"+j+" "+ savedPlaces[i]+"<button onclick=deleteitem("+ i+")>x</button>" +"  "+"<button onclick='rightOrder("+ i +")'>></button></td>";
                         var next = i+1;
                         if (next%perrow==0 && next!= savedPlaces.length) {
                             html += "</tr><tr>";
@@ -427,9 +440,41 @@
                 function getdetails(){
                     service.getDetails(detRequest, callback2)
                 }
+                   
+        $(document).ready(function(){
+             {{#each places}}
+                     savedPlaces.push("{{this}}");
+                        console.log(savedPlaces)
+                     {{/each}}
+                     displayArray();
+                         
+            
+            
+        $("button.saveplaces").click(function(){
+            
+            $("#splaces").val(savedPlaces)
+            console.log(savedPlaces[0])
+            $("#save").submit()
+            
+        
+                
+            
+            
+             
+         
+            
+        })
+             
+                    
+          
+                 
+        })
+       
+            
             
             
         </script>
+        
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKkISCreDl16D3FVIDI476Jre8-qEFPv0&callback=initMap&libraries=places" async defer></script>
     
     </body>
