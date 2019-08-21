@@ -260,14 +260,13 @@ app.get("/Logout", function(req,res){
 })
 
 app.post("/createlist", urlencoder, function(req,res){
-
+    let formatted
      let  listname= req.body.listname
-    let date = req.body.date
-   
+    let date = new Date(req.body.date)
       let list = new List({
         
                name : listname,
-               date : date 
+               date : date
          
          
          
